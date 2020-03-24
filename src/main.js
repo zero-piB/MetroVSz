@@ -1,11 +1,12 @@
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from 'vue'
-import './plugins/bootstrap-vue'
-import './plugins/element-ui'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import './plugins/bootstrap-vue'
+import './plugins/element-ui'
+import './plugins/axios'
 
 Vue.config.productionTip = false
 

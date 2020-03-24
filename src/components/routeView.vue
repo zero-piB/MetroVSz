@@ -1,7 +1,7 @@
 <template>
-    <div id="routeView" >
-        <div v-for="(item,index) in msg" :key = index>
-            <route/>
+    <div id="routeView">
+        <div v-for="(route,index) in routeData" :key = index >
+            <route :route="route"/>
         </div>
     </div>
 </template>
@@ -12,19 +12,35 @@ import route from "./route"
 export default {
     data(){
         return{
-            msg:[1,2,3,4,5,6,7,8,9,10]
+            routeData:[]
+
         }
     },
     components:{
         route
+    },
+    created(){
+        this.axios.get('api/routes').then(res=>{
+            let routes = res.data;
+            routes.forEach(element => {
+                let route = {}
+                route["routeName"] = element["name"]
+                route["new_name"] = element["new_name"]
+                route["stopNums"] = element["stopsCount"]
+                route["stops"] = element["stops"]
+                this.routeData.push(route)
+            });
+        })
     }
 }
 </script>
 
 <style lang="scss">
 #routeView{
+    // position: relative;
     width:inherit;
-    height: inherit;
+    height: 310px;
+    // bottom: 0;
     overflow:scroll;
 }
  /*滚动条样式*/

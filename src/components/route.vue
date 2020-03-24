@@ -1,16 +1,14 @@
 <template>
-    <div>
-        <input :name = "routeName" type="radio" @input="handleClick"/>
-    </div>
+    <svg>
+    </svg>
 </template>
 <script>
 import * as d3 from 'd3'
 export default {
-    name:"route",
     data(){
         return {
-            routeName:"琼丹",
-            routes:["王魏华","陈修艺","李春晓","李莉颖","陈湘宇","罗琦","刘婷婷","李幸静"]
+            routeName:"",
+            routes:[]
         }
     },
     methods:{
@@ -18,47 +16,68 @@ export default {
             console.log(this.routeName)
         }
     },
+    props:["route"],
+    created(){
+        this.new_name= this.route["new_name"]
+        this.routeName = this.route["routeName"]
+        this.routes = this.route["stops"]
+    },
     mounted(){
         let r = 10;
         let svg = d3.select(this.$el)
-                    .append("svg")
-                    .attr("width",r*2*this.routes.length)
-                    .attr("height",2*r);
+                    .attr("width",r*2*this.routes.length + 150)
+                    .attr("height",2*r + r)
+                    .on("click",()=>{
+                        console.log(this.routeName)
+                    })
+        
 
-        let route = svg.selectAll("circle")
+        let trip = svg.selectAll("circle")
                         .data(this.routes)
                         .enter()
                         .append("circle")
                         .attr("r",0)
-                        .attr("cy",r)
+                        .attr("cy",r + r/2)
                         .attr("cx",(data,index)=>{
                             return r + index*2*r
                         })
                         .attr("class", "graf")
                         .attr("fill","steelblue")
                         .on("click",(d)=>{
-                            alert(d)
+                            console.log(d["site_name"])
+                            d3.event.stopPropagation();  //阻止事件冒泡
                         })
-
-        route.transition()
-             .delay(100)     //延迟500ms再开始
-             .duration(600) //过渡时长为1000ms
+        trip.transition()
+             .delay(300)     //延迟300ms再开始
+             .duration(1000) //过渡时长为1000ms
              // .ease("bounce") //过渡样式
              .attr("r",r); //目标属性
 
-    }
+        svg.append("text")
+          .text(this.new_name)
+          .attr("font-size",0)
+          .attr("x",r*2*this.routes.length+10)
+          .attr("y",r*2)
+          .style("fill","white")
+          .transition()
+          .delay(300)
+          .duration(1000)
+          .attr("font-size",13)
+        //   .style("font-weight","bold")
+        // trip.data(this.routeName)
+        //      .enter()
+        //      .append("text")
+        //      .attr("font-size",15)
+        //      .attr("text-color","width")
+
+    },
+    
+
 }
 </script>
 
 <style lang="scss" scoped>
-div{
-    width: 100%;
-    margin: 0;
-}
-input{
-    zoom:1.2;
-    position: relative;
-    top:2px;
-    margin: 0 8px 0 5px;
+svg{
+    margin: 5px 5px 5px 10px;
 }
 </style>

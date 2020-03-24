@@ -11,10 +11,11 @@
 .xpanel {
 	padding:8px;
     height:100%;
+    min-height: 100%;
     width: 100%;
 	min-height:170px;
 	background:url("../assets/img/panel.png")  no-repeat;
 	background-size:100% 100%;
-	box-sizing:border-box;
+    box-sizing: border-box;
 }
 </style>
