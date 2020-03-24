@@ -15,7 +15,8 @@ export default {
     },
     methods:{
         initMap(){
-            let map = new window.AMap.Map('mapView', {
+            // const map = 
+            new window.AMap.Map('mapView', {
                 mapStyle: 'amap://styles/dark',
                 zoom: 11,
                 zooms: [4,15],//设置地图级别范围
@@ -23,8 +24,7 @@ export default {
                 center: [114.09863543,22.646354],//[114.05096,22.541009]
                 features: ['bg', 'road']  //定义显示样式
             });
-            let currentCenter = map.getCenter(); 
-            console.log(currentCenter)
+
         }
     },
     async created (){
@@ -33,8 +33,8 @@ export default {
             this.initMap()
         }else{
             // 未载入高德地图API，则先载入API再初始化
-            await remoteLoad(`http://webapi.amap.com/maps?v=1.4.15&&key=${MapKey}`)
-            // await remoteLoad('https://webapi.amap.com/ui/1.0/main.js')
+            await remoteLoad(`https://webapi.amap.com/maps?v=1.4.15&&key=${MapKey}`)
+            await remoteLoad('https://webapi.amap.com/ui/1.0/main-async.js')
             this.initMap()
         }
     } 
@@ -45,4 +45,6 @@ export default {
     height: 100%;
     width: 100%;
 }
+
+
 </style>

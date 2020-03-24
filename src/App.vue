@@ -11,7 +11,9 @@
         </div>
         <div class="col-lg-4">
           <VuePanel style="height:50%"/>
-          <VuePanel style="height:50%"/>
+          <VuePanel style="height:50%">
+            <RouteView/>
+          </VuePanel>
         </div>
       </div>
     </div>
@@ -22,6 +24,7 @@
 import VuePanel from './components/xpanel.vue';
 import MapView from './components/MapView.vue';
 import VueHeader from './components/header.vue';
+import RouteView from './components/routeView'
 
 export default {
   data(){
@@ -32,7 +35,8 @@ export default {
   components:{
     VuePanel,
     VueHeader,
-    MapView
+    MapView,
+    RouteView
   },
   computed:{
 
