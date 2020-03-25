@@ -7,6 +7,7 @@
 
 import remoteLoad from '@/utils/remoteLoad.js'
 import { MapKey} from '@/config'
+import store from '../store'
 export default {
     data(){
         return{
@@ -24,8 +25,24 @@ export default {
                 center: [114.09863543,22.646354],//[114.05096,22.541009]
                 features: ['bg', 'road']  //定义显示样式
             });
-
         }
+    },
+    store,
+    computed:{
+        getSelectedRoute(){
+            return store.state.selectedRoute
+        },
+        getSelectedStop(){
+            return store.state.selectedStop
+        }
+    },
+    watch:{
+       getSelectedRoute(val){
+           console.log(val)
+       },
+       getSelectedStop(val){
+           console.log(val)
+       }
     },
     async created (){
         // 已载入高德地图API，则直接初始化地图

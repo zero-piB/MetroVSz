@@ -4,6 +4,7 @@
 </template>
 <script>
 import * as d3 from 'd3'
+import store from '../store'
 export default {
     data(){
         return {
@@ -11,10 +12,8 @@ export default {
             routes:[]
         }
     },
+    store,
     methods:{
-        handleClick(){
-            console.log(this.routeName)
-        }
     },
     props:["route"],
     created(){
@@ -28,7 +27,8 @@ export default {
                     .attr("width",r*2*this.routes.length + 150)
                     .attr("height",2*r + r)
                     .on("click",()=>{
-                        console.log(this.routeName)
+                        store.commit('setSelectedRoute',this.routeName);
+                        // console.log(this.routeName)
                     })
         
 
@@ -44,7 +44,8 @@ export default {
                         .attr("class", "graf")
                         .attr("fill","steelblue")
                         .on("click",(d)=>{
-                            console.log(d["site_name"])
+                            store.commit('setSelectedStop',d["site_name"]);
+                            // console.log(d["site_name"])
                             d3.event.stopPropagation();  //阻止事件冒泡
                         })
         trip.transition()
@@ -63,13 +64,6 @@ export default {
           .delay(300)
           .duration(1000)
           .attr("font-size",13)
-        //   .style("font-weight","bold")
-        // trip.data(this.routeName)
-        //      .enter()
-        //      .append("text")
-        //      .attr("font-size",15)
-        //      .attr("text-color","width")
-
     },
     
 
