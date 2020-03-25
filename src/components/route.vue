@@ -46,7 +46,7 @@ export default {
                         .on("click",(d)=>{
                             store.commit('setSelectedStop',d["site_name"]);
                             // console.log(d["site_name"])
-                            d3.event.stopPropagation();  //阻止事件冒泡
+                            // d3.event.stopPropagation();  //阻止事件冒泡
                         })
         trip.transition()
              .delay(300)     //延迟300ms再开始

@@ -35,17 +35,17 @@ export default {
                 });
                 map.addControl(zoomCtrl);
             })
-
             this.map = map;
         },
         drawRoute(routeName){
             if(!window.pathSimplifierIns){
                 const map = this.map;
-                window.AMapUI.loadUI(['misc/PathSimplifier'],PathSimplifier=>{
+                window.AMapUI.loadUI(['misc/PathSimplifier'],(PathSimplifier)=>{
                     window.pathSimplifierIns = new PathSimplifier({
                         zIndex: 100,
                         map:map,
                         clickToSelectPath:false,
+                        getHoverTitle:(pathData)=>pathData.name, 
                         getPath: pathData => pathData.path,
                         renderOptions:{
                             renderAllPointsIfNumberBelow: -1 //绘制路线节点，如不需要可设置为-1
@@ -58,8 +58,31 @@ export default {
                 this.setRouteData(routeName)
             }
         },
-        drawStop(){
-
+        drawStop(stop){
+            if(store.state.selectedRoute.length===0) return
+            const map = this.map;
+            // this.axios.get(`api/sitePosition&site=${stop}`)
+            // .then(res=>{
+            //     console.log(res)
+            //     new window.AMap.Marker({
+            //         map: map,
+            //         position: res.data,    
+            //     }) 
+            // })
+            setTimeout(()=>{
+                this.axios.post(`api/sitePosition`,{
+                    "site": stop,
+                    "line_name": store.state.selectedRoute
+                })
+                .then(res=>{
+                    // console.log(res)
+                    new window.AMap.Marker({
+                        map: map,
+                        position: res.data,    
+                    }) 
+                })
+            },80)
+            
         },
         setRouteData(routeName){
             //加载数据
@@ -79,11 +102,11 @@ export default {
     },
     watch:{
        getSelectedRoute(val){
+           this.map.clearMap()
            this.drawRoute(val);
-           
        },
        getSelectedStop(val){
-           console.log(val)
+           this.drawStop(val)
        }
     },
     async created (){
