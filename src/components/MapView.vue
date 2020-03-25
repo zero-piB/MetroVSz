@@ -11,13 +11,12 @@ import store from '../store'
 export default {
     data(){
         return{
-
+            map:Object(),
         }
     },
     methods:{
         initMap(){
-            // const map = 
-            new window.AMap.Map('mapView', {
+            const map = new window.AMap.Map('mapView', {
                 mapStyle: 'amap://styles/dark',
                 zoom: 11,
                 zooms: [4,15],//设置地图级别范围
@@ -25,6 +24,48 @@ export default {
                 center: [114.09863543,22.646354],//[114.05096,22.541009]
                 features: ['bg', 'road']  //定义显示样式
             });
+
+            //加载缩放控件
+            window.initAMapUI();
+            window.AMapUI.loadUI(['control/BasicControl'], function(BasicControl) {
+                let zoomCtrl = new BasicControl.Zoom({
+                    theme:'dark',
+                    position: 'br', //left top，左上角
+                    showZoomNum: true //显示zoom值
+                });
+                map.addControl(zoomCtrl);
+            })
+
+            this.map = map;
+        },
+        drawRoute(routeName){
+            if(!window.pathSimplifierIns){
+                const map = this.map;
+                window.AMapUI.loadUI(['misc/PathSimplifier'],PathSimplifier=>{
+                    window.pathSimplifierIns = new PathSimplifier({
+                        zIndex: 100,
+                        map:map,
+                        clickToSelectPath:false,
+                        getPath: pathData => pathData.path,
+                        renderOptions:{
+                            renderAllPointsIfNumberBelow: -1 //绘制路线节点，如不需要可设置为-1
+                        }
+                    })
+                    this.setRouteData(routeName)
+                })
+            }
+            else{
+                this.setRouteData(routeName)
+            }
+        },
+        drawStop(){
+
+        },
+        setRouteData(routeName){
+            //加载数据
+            this.axios.get(`api/routes&line_name=${routeName}`).then(res=>{
+                window.pathSimplifierIns.setData(res.data)
+            })
         }
     },
     store,
@@ -38,7 +79,8 @@ export default {
     },
     watch:{
        getSelectedRoute(val){
-           console.log(val)
+           this.drawRoute(val);
+           
        },
        getSelectedStop(val){
            console.log(val)

@@ -57,7 +57,7 @@ export default {
         svg.append("text")
           .text(this.new_name)
           .attr("font-size",0)
-          .attr("x",r*2*this.routes.length+10)
+          .attr("x",r*2*this.routes.length + 10)
           .attr("y",r*2)
           .style("fill","white")
           .transition()
