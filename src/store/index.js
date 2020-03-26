@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     selectedRoute:'',
-    selectedStop:''
+    selectedStop:'',
+    selectedRouteDom:null,
+    selectedStopDom:null,
   },
   mutations: {
     setSelectedRoute(state,val){
@@ -14,7 +16,13 @@ export default new Vuex.Store({
     },
     setSelectedStop(state,val){
       state.selectedStop = val
-    }
+    },
+    setSelectedRouteDom(state,val){
+      state.selectedRouteDom = val
+    },
+    setSelectedStopDom(state,val){
+      state.selectedStopDom = val
+    },
   },
   actions: {
   },
@@ -24,7 +32,13 @@ export default new Vuex.Store({
     },
     selectedStop:state=>{
       return state.selectedStop
-    }
+    },
+    selectedRouteDom:state=>{
+      return state.selectedRouteDom
+    },
+    selectedStopDom:state=>{
+      return state.selectedStopDom
+    },
   },
   modules: {
   }

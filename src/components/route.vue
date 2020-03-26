@@ -28,7 +28,8 @@ export default {
                     .attr("height",2*r + r)
                     .on("click",()=>{
                         store.commit('setSelectedRoute',this.routeName);
-                        // console.log(this.routeName)
+                        let svgDom = svg["_groups"][0][0];
+                        store.commit('setSelectedRouteDom',svgDom);        
                     })
         
 
@@ -43,9 +44,11 @@ export default {
                         })
                         .attr("class", "graf")
                         .attr("fill","steelblue")
-                        .on("click",(d)=>{
+                        .on("click",(d,i)=>{
                             store.commit('setSelectedStop',d["site_name"]);
-                            // console.log(d["site_name"])
+                            let [routeDom] = trip["_groups"]
+                            store.commit('setSelectedStopDom',routeDom[i]);
+                            
                             // d3.event.stopPropagation();  //阻止事件冒泡
                         })
         trip.transition()
@@ -70,8 +73,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-svg{
-    margin: 5px 5px 5px 10px;
+<style lang="scss">
+.graf:hover{
+    fill: rgb(0, 255, 106);
 }
 </style>

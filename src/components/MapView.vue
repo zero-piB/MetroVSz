@@ -11,7 +11,8 @@ import store from '../store'
 export default {
     data(){
         return{
-            map:Object(),
+            map:{},
+            sites:{},
         }
     },
     methods:{
@@ -59,30 +60,29 @@ export default {
             }
         },
         drawStop(stop){
-            if(store.state.selectedRoute.length===0) return
             const map = this.map;
-            // this.axios.get(`api/sitePosition&site=${stop}`)
-            // .then(res=>{
-            //     console.log(res)
-            //     new window.AMap.Marker({
-            //         map: map,
-            //         position: res.data,    
-            //     }) 
-            // })
-            setTimeout(()=>{
-                this.axios.post(`api/sitePosition`,{
-                    "site": stop,
-                    "line_name": store.state.selectedRoute
-                })
-                .then(res=>{
-                    // console.log(res)
-                    new window.AMap.Marker({
-                        map: map,
-                        position: res.data,    
-                    }) 
-                })
-            },80)
-            
+            //无标记，添加新标记
+            if(!this.sites[stop]){
+                this.sites[stop] = true
+                setTimeout(()=>{
+                    this.axios.post(`api/sitePosition`,{
+                        "site": stop,
+                        "line_name": store.state.selectedRoute
+                    })
+                    .then(res=>{
+                        // console.log(res)
+                        map.setCenter(res.data);
+                        new window.AMap.Marker({
+                            map: map,
+                            position: res.data,
+                            animation:"AMAP_ANIMATION_DROP",
+                            title:stop    
+                        }).on('click',()=>{
+                            alert(stop)
+                        }) 
+                    })
+                },80)
+            }
         },
         setRouteData(routeName){
             //加载数据
@@ -98,16 +98,40 @@ export default {
         },
         getSelectedStop(){
             return store.state.selectedStop
-        }
+        },
+        getSelectedRouteDom(){
+            return store.state.selectedRouteDom
+        },
+        getSelectedStopDom(){
+            return store.state.selectedStopDom
+        },
     },
     watch:{
        getSelectedRoute(val){
            this.map.clearMap()
+           this.sites = {}
            this.drawRoute(val);
        },
        getSelectedStop(val){
            this.drawStop(val)
-       }
+       },
+       getSelectedRouteDom(newDom,oldDom){
+           if(newDom){
+                newDom.style.border = "green solid 1px"      
+           }
+           if(oldDom){
+                oldDom.style.removeProperty("border")
+           }
+       },
+       getSelectedStopDom(newDom,oldDom){
+           if(newDom){
+                newDom.setAttribute("stroke","red")
+           }
+           if(oldDom){
+                newDom.setAttribute("stroke-width",1)
+                oldDom.removeAttribute("stroke")
+           }
+       },
     },
     async created (){
         // 已载入高德地图API，则直接初始化地图
@@ -127,6 +151,4 @@ export default {
     height: 100%;
     width: 100%;
 }
-
-
 </style>

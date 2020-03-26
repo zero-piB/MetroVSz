@@ -34,11 +34,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #routeView{
     // position: relative;
     width:inherit;
     height: 310px;
+    // height: inherit;
     // bottom: 0;
     overflow:scroll;
 }
@@ -58,12 +59,10 @@ export default {
     border-radius: 10px;  
     background-color: #FFF;  
 }
-
-.graf:hover{
-    fill: rgb(0, 255, 106);
-}
-
 svg:hover{
     background-color: #06d9d9;
+}
+svg{
+    margin: 5px 5px 5px 10px;
 }
 </style>
