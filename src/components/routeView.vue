@@ -9,14 +9,43 @@
 //在这里加载所有的路径
 
 import route from "./route"
+import store from '../store'
 export default {
     data(){
         return{
-            routeData:[]
+            routeData:[],
         }
     },
+    store,
     components:{
         route
+    },
+    computed:{
+        getSelectedRouteDom(){
+            return store.state.selectedRouteDom
+        },
+        getSelectedStopDom(){
+            return store.state.selectedStopDom
+        },
+    },
+    watch:{
+       getSelectedRouteDom(newDom,oldDom){
+           if(newDom){
+                newDom.style.border = "green solid 1px"
+           }
+           if(oldDom){
+                oldDom.style.removeProperty("border")
+           }
+       },
+       getSelectedStopDom(newDom,oldDom){
+           if(newDom){
+                newDom.setAttribute("stroke","red")
+           }
+           if(oldDom){
+                newDom.setAttribute("stroke-width",1)
+                oldDom.removeAttribute("stroke")
+           }
+       },
     },
     created(){
         this.axios.get('api/routes').then(res=>{

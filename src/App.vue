@@ -10,7 +10,9 @@
           </VuePanel>
         </div>
         <div class="col-lg-4">
-          <VuePanel style="height:50%"/>
+          <VuePanel style="height:50%">
+            <punchCardView/>
+          </VuePanel>
           <VuePanel style="height:50%">
             <RouteView/>
           </VuePanel>
@@ -24,8 +26,8 @@
 import VuePanel from './components/xpanel.vue';
 import MapView from './components/MapView.vue';
 import VueHeader from './components/header.vue';
-import RouteView from './components/routeView'
-
+import RouteView from './components/routeView';
+import punchCardView from './components/punchCardView';
 export default {
   data(){
     return{
@@ -36,7 +38,8 @@ export default {
     VuePanel,
     VueHeader,
     MapView,
-    RouteView
+    RouteView,
+    punchCardView,
   },
   computed:{
 

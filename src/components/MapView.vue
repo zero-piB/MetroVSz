@@ -99,12 +99,6 @@ export default {
         getSelectedStop(){
             return store.state.selectedStop
         },
-        getSelectedRouteDom(){
-            return store.state.selectedRouteDom
-        },
-        getSelectedStopDom(){
-            return store.state.selectedStopDom
-        },
     },
     watch:{
        getSelectedRoute(val){
@@ -114,23 +108,6 @@ export default {
        },
        getSelectedStop(val){
            this.drawStop(val)
-       },
-       getSelectedRouteDom(newDom,oldDom){
-           if(newDom){
-                newDom.style.border = "green solid 1px"      
-           }
-           if(oldDom){
-                oldDom.style.removeProperty("border")
-           }
-       },
-       getSelectedStopDom(newDom,oldDom){
-           if(newDom){
-                newDom.setAttribute("stroke","red")
-           }
-           if(oldDom){
-                newDom.setAttribute("stroke-width",1)
-                oldDom.removeAttribute("stroke")
-           }
        },
     },
     async created (){
