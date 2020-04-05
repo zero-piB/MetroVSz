@@ -9,6 +9,7 @@ export default new Vuex.Store({
     selectedStop:'',
     selectedRouteDom:null,
     selectedStopDom:null,
+    crowdCardVisible:false,
   },
   mutations: {
     setSelectedRoute(state,val){
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     setSelectedStopDom(state,val){
       state.selectedStopDom = val
+    },
+    setCardVisble(state,val){
+      state.crowdCardVisible = val
     },
   },
   actions: {
@@ -38,6 +42,9 @@ export default new Vuex.Store({
     },
     selectedStopDom:state=>{
       return state.selectedStopDom
+    },
+    crowdCardVisible:state=>{
+      return state.crowdCardVisible
     },
   },
   modules: {

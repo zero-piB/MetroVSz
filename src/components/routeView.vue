@@ -6,8 +6,6 @@
     </div>
 </template>
 <script>
-//在这里加载所有的路径
-
 import route from "./route"
 import store from '../store'
 export default {

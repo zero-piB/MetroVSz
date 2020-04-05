@@ -58,7 +58,7 @@ export default {
              .attr("r",r); //目标属性
 
         svg.append("text")
-          .text(this.new_name)
+          .text(this.new_name + "路")
           .attr("font-size",0)
           .attr("x",r*2*this.routes.length + 10)
           .attr("y",r*2)

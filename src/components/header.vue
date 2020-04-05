@@ -14,6 +14,7 @@ $headerH:42px;
   url("../assets/img/header-right.png") right center no-repeat;
   background-size:40% 80%, 40% 80%;
   overflow:hidden;
+  user-select:none;
 }
 
 .header h3{
