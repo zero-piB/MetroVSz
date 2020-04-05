@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <crowdCard v-if="crowdCardVisible"/>
+    <crowdCard v-if="crowdCardVisible">
+      <dateView/>
+    </crowdCard>
     <VueHeader/>
     <div class="container-fluid">
       <div class="row">
@@ -29,6 +31,7 @@ import VueHeader from './components/header.vue';
 import RouteView from './components/routeView';
 import punchCardView from './components/punchCardView';
 import crowdCard from './components/crowdCard';
+import dateView from './components/dateView';
 export default {
   data(){
     return{
@@ -43,6 +46,7 @@ export default {
     RouteView,
     punchCardView,
     crowdCard,
+    dateView,
   },
   computed:{
       getSelectedRoute(){

@@ -1,10 +1,9 @@
 <template>
     <transition name="fade" disabled="false">
-      <div class="float-card">
+      <div class="float-card" :key="1">
         <div class="remove icon"  @click="handleClose"></div>
+        <slot/>
       </div>
-      <!-- 下面是内容 -->
-      <slot/>
     </transition>
 </template>
 
@@ -68,7 +67,7 @@ export default {
 $iconRadius:20px;
 .float-card{
     position:absolute;
-    background-color:rgba(29, 187, 235,0.5);
+    background-color:rgba(253, 253, 253, 0.8);
     z-index: 200;
     border-radius: 20px;
     border: 2px solid rgb(45, 161, 238);
@@ -76,6 +75,7 @@ $iconRadius:20px;
     left: 25%;
     height: 400px;
     width: 700px;
+    padding-top: 25px;
 }
 .remove.icon {
   position: absolute;
