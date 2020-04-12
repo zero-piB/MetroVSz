@@ -88,6 +88,12 @@ export default {
             //加载数据
             this.axios.get(`api/routes&line_name=${routeName}`).then(res=>{
                 window.pathSimplifierIns.setData(res.data)
+                //创建一个巡航器
+                let navg = window.pathSimplifierIns.createPathNavigator(0,{
+                    loop: true, //循环播放
+                    speed: 10000
+                });
+                navg.start();
             })
         }
     },

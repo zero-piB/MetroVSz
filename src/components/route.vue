@@ -5,14 +5,30 @@
 <script>
 import * as d3 from 'd3'
 import store from '../store'
+// import * as underscore from 'underscore' 
 export default {
     data(){
         return {
             routeName:"",
-            routes:[]
+            routes:[],
+            svg:null,
         }
     },
     store,
+    computed:{
+        getSelectRouted(){
+            return store.state.selectedRoute
+        }
+    },
+    watch:{
+        getSelectRouted(newVal){
+            if(newVal === this.routeName){
+                console.log(this.svg)
+                store.commit('setSelectedRouteDom',this.svg["_groups"][0][0]); 
+            }
+            
+        }
+    },
     methods:{
     },
     props:["route"],
@@ -23,17 +39,25 @@ export default {
     },
     mounted(){
         let r = 10;
-        let svg = d3.select(this.$el)
+        let vm = this
+        this.svg = d3.select(this.$el)
                     .attr("width",r*2*this.routes.length + 150)
                     .attr("height",2*r + r)
                     .on("click",()=>{
                         store.commit('setSelectedRoute',this.routeName);
-                        let svgDom = svg["_groups"][0][0];
-                        store.commit('setSelectedRouteDom',svgDom);        
+                        let svgDom = vm.svg["_groups"][0][0];
+                        store.commit('setSelectedRouteDom',svgDom);       
                     })
-        
+        let tooltip = d3.select('body')
+                    .append('div')
+                    .style('position', 'absolute')
+                    .style('z-index', '10')
+                    .style('color', 'white')
+                    .style('visibility', 'hidden')   // 是否可见（一开始设置为隐藏）
+                    .style('font-size', '13px')
+                    .text('')
 
-        let trip = svg.selectAll("circle")
+        let trip = vm.svg.selectAll("circle")
                         .data(this.routes)
                         .enter()
                         .append("circle")
@@ -48,16 +72,22 @@ export default {
                             store.commit('setSelectedStop',d["site_name"]);
                             let [routeDom] = trip["_groups"]
                             store.commit('setSelectedStopDom',routeDom[i]);
-                            
                             // d3.event.stopPropagation();  //阻止事件冒泡
                         })
+                        .on('mouseover', (d) => {
+                            tooltip.style('visibility', 'visible').text(d['site_name'])
+                        })
+                        .on('mousemove', ()=> {
+                            tooltip.style('top', (event.pageY-15)+'px').style('left',(event.pageX+10)+'px')
+                        })
+                        .on('mouseout',()=>tooltip.style('visibility', 'hidden'))
         trip.transition()
              .delay(300)     //延迟300ms再开始
              .duration(1000) //过渡时长为1000ms
              // .ease("bounce") //过渡样式
              .attr("r",r); //目标属性
 
-        svg.append("text")
+        vm.svg.append("text")
           .text(this.new_name + "路")
           .attr("font-size",0)
           .attr("x",r*2*this.routes.length + 10)

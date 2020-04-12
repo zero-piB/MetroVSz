@@ -8,14 +8,17 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "-": "0.0.1",
     "axios": "^0.19.2",
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.4",
     "d3": "^5.15.0",
     "echarts": "^4.7.0",
     "element-ui": "^2.13.0",
+    "s": "^1.0.0",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",
+    "vue-underscore": "^0.1.4",
     "vuex": "^3.1.2"
   },
   "devDependencies": {

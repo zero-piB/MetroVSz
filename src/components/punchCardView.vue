@@ -15,7 +15,8 @@ export default {
             hours:['12a', '1a', '2a', '3a', '4a', '5a', '6a', '7a', '8a', '9a', '10a', '11a', '12p', '1p', '2p', '3p', '4p', '5p', '6p', '7p', '8p', '9p', '10p', '11p'],
             days:['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
             data:data,
-            maxValue:maxValue
+            maxValue:maxValue,
+            myChart:null
         }
     },
     store,
@@ -39,18 +40,30 @@ export default {
                 })
             };
         },
-
+        async fetch(){
+            let res = await this.axios.get(`api/routes/routeCrowdedness&line_name=${store.state.selectedRoute}`)
+            res = res.data;
+            console.log(res[0])
+        }
     },
     mounted(){
         let vm = this;
         // let dom = this.$el;
-        let myChart = echarts.init(this.$el,'dark');
+        this.myChart = echarts.init(this.$el,'dark');
         let option = {
              // 全局调色盘。
             color: ['#c23531','#2f4554', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
             legend: {
                 data: ['拥挤度'],
                 right:'1%'
+            },
+            title: {
+                text: store.state.selectedRoute,
+                left: 'left',
+                textStyle:{
+                    fontSize:12,
+                    fontWeight:'lighter'
+                },
             },
             polar: {},
             tooltip: {
@@ -103,14 +116,28 @@ export default {
             }]
         };
         if (option && typeof option === "object") {
-            myChart.setOption(option, true);
+            this.myChart.setOption(option, true);
         }
-
-        myChart.on('click', function (params) {
+        this.fetch()
+        this.myChart.on('click', function (params) {
             // vm.$emit("handleCardVisible",params.name)
             store.commit('setCardVisble',params.name); 
             // alert(params.name)
         });
+    },
+    computed:{
+        selectedRoute(){
+            return store.state.selectedRoute
+        }
+    },
+    watch:{
+        selectedRoute(newVal){
+            this.myChart.setOption({
+                title:{
+                    text:newVal
+                }
+            })
+        }
     }
 }
 </script>

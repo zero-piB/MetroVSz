@@ -8,6 +8,7 @@
       <div class="row">
         <div class="col-lg-8">
           <VuePanel style="height:100%">
+            <search/>
             <map-view/>
           </VuePanel>
         </div>
@@ -32,6 +33,7 @@ import RouteView from './components/routeView';
 import punchCardView from './components/punchCardView';
 import crowdCard from './components/crowdCard';
 import dateView from './components/dateView';
+import search from './components/search';
 export default {
   data(){
     return{
@@ -47,6 +49,7 @@ export default {
     punchCardView,
     crowdCard,
     dateView,
+    search,
   },
   computed:{
       getSelectedRoute(){

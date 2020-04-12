@@ -52,12 +52,38 @@ export default {
             this.dragging = null;
             break;
         }
+      },
+      // 防抖动函数
+      debounce(func, wait, immediate) {
+        let timeout, result;
+        let debounced = function(){
+          let context = this;
+          let args = arguments;
+          if(immediate){
+            let callNow = !immediate
+            timeout = setTimeout(()=>{
+              timeout = null
+            },wait);
+            if(callNow) result = func.apply(context,args)
+          }else{
+            timeout = setTimeout(()=>{
+              func.apply(context,args)
+            },wait)
+          }
+          return result
+        }
+        console.log(timeout)
+        return debounced
       }
     },
     
     mounted(){
-      EventUtil.addHandler(this.$el,"mousedown",this.handleEvent);
-      EventUtil.addHandler(this.$el,"mousemove",this.handleEvent);
+      let vm = this;
+      // this.$el.addEventListener('mousedown',this.handleEvent)
+      // this.$el.addEventListener('mousemove',this.debounce(vm.handleEvent,50))
+      // this.$el.addEventListener('mouseup',this.handleEvent)
+      EventUtil.addHandler(this.$el,"mousedown",this.debounce(vm.handleEvent,10));
+      EventUtil.addHandler(this.$el,"mousemove",this.debounce(vm.handleEvent,10));
       EventUtil.addHandler(this.$el,"mouseup",this.handleEvent);
     }
 };

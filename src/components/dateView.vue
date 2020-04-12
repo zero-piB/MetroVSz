@@ -16,6 +16,7 @@ export default {
             option:{},
             startTime:'',
             endTime:'',
+            myChart:null,
         }
     },
     store,
@@ -57,62 +58,70 @@ export default {
             let mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
             let ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
             return YY + MM + DD +" "+hh + mm + ss;
-        }
-    },
-    created(){
-        let vm = this
-        vm.axios.get(`api/routes/crowdData&line_name=${store.getters.selectedRoute}`)
-                .then(response=>{
-                    if(response.status===200){
-                        vm.data = response.data[0]
-                        let data = response.data[0];
-                        // console.log(data)
-                        vm.startTime =  data['startTime']
-                        vm.endTime = data['endTime']
-                        data['route'].forEach(element => {
-                            let site_name = element['site_name']
-                            vm.stops.push(site_name)
-                            vm.averageTime.push(element['averageTime'])
-                            let records = element['records'];
+        },
+        async fetchAndUpdate(){
+            let vm = this
+            vm.crowdedData =[]
+            vm.stops = []
+            let res = await vm.axios.get(`api/routes/crowdData&line_name=${store.getters.selectedRoute}`)
+            if(res.status===200){
+                vm.data = res.data[0]
+                let data = res.data[0];
+                // console.log(data)
+                vm.startTime =  data['startTime']
+                vm.endTime = data['endTime']
+                data['route'].forEach(element => {
+                    let site_name = element['site_name']
+                    vm.stops.push(site_name)
+                    vm.averageTime.push(element['averageTime'])
+                    let records = element['records'];
 
-                            records.sort((record1,record2)=>{
-                                if(record1['arriveTime']>record2['arriveTime']){
-                                    return 1;
-                                }
-                                else return -1;
-                            });
-                            
-                            for(let i = 0; i < records.length-1; i++){
-                                let curTime = vm.formatDate(1000*records[i]['arriveTime'])
-                                let nextTime = vm.formatDate(1000*records[i+1]['arriveTime'])
-                                let crowdNum = records[i]['crowdNum']
-                                let tag = records[i]['bus']
-                                let crowdData_stop = [site_name,curTime,nextTime,crowdNum,tag]
-                                vm.crowdedData.push({
-                                    value:crowdData_stop,
-                                    itemStyle: {
-                                        normal: {
-                                            color: vm.color[crowdNum]
-                                        }
-                                    }
-                                });
-                                // console.log(crowdData_stop)
-                            }
-                            
-                        });
-                        
-                    }
+                    records.sort((record1,record2)=>{
+                        if(record1['arriveTime']>record2['arriveTime']){
+                            return 1;
+                        }
+                        else return -1;
+                    });
                     
-                })
-    },
-    beforeMount(){
+                    for(let i = 0; i < records.length-1; i++){
+                        let curTime = vm.formatDate(1000*records[i]['arriveTime'])
+                        let nextTime = vm.formatDate(1000*records[i+1]['arriveTime'])
+                        let crowdNum = records[i]['crowdNum']
+                        let tag = records[i]['bus']
+                        let crowdData_stop = [site_name,curTime,nextTime,crowdNum,tag]
 
-    },
-    mounted(){
-        let vm = this;
-        let myChart = echarts.init(vm.$el)
-        // console.log(vm.stops)
-        setTimeout(()=>{
+                        vm.crowdedData.push({
+                            value:crowdData_stop,
+                            itemStyle: {
+                                normal: {
+                                    color: crowdNum<vm.color.length?vm.color[crowdNum]:vm.color.slice(-1)[0]
+                                }
+                            }
+                        });
+                    }
+
+                });
+
+               //更新图表
+                let option = {
+                    title:{
+                        text:store.getters.selectedRoute
+                    },
+                    yAxis:{
+                        data: vm.stops
+                    },
+                    series:[{
+                        id:'crowdedData',
+                        data:vm.crowdedData
+                    }]
+                }
+                this.myChart.setOption(option)
+                this.myChart.hideLoading()
+            }
+
+        },
+        setEchartOption(){
+            let vm = this;
             vm.option = {
                 tooltip: {
                     formatter: function (params) {
@@ -140,7 +149,7 @@ export default {
                     }
                 },
                 yAxis:{
-                    data: vm.stops,
+                    data: [],
                     splitLine: {
                         show:true,
                         interval:0,
@@ -198,11 +207,32 @@ export default {
                         x:[1,2]
                     },
                     renderItem: vm.renderItem,
-                    data:vm.crowdedData
+                    data:[]
                 }]
             }
-           myChart.setOption(vm.option);
-        },500)
+            vm.myChart.setOption(vm.option);
+        },
+    },
+    mounted(){
+        this.myChart = echarts.init(this.$el)
+        this.setEchartOption();
+        this.myChart.showLoading({
+            text: '数据正在努力加载...',
+        })
+        this.fetchAndUpdate()
+    },
+    computed:{
+        getSelectedRoute(){
+            return store.state.selectedRoute
+        },
+    },
+    watch:{
+        getSelectedRoute(){
+            this.myChart.showLoading({
+                text: '数据正在努力加载...',
+            })
+            this.fetchAndUpdate()
+       },
     }
 }
 </script>
