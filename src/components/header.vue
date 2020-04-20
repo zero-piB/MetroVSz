@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-			<h3>公交网络服务水平系统</h3>
+			<h3>公交服务水平可视化系统</h3>
 	</header>
 </template>
 

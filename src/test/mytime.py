@@ -24,6 +24,5 @@ def getHours(date = "2020-04-01 12:35:50", DateFormat="%Y-%m-%d %H:%M:%S"):
     #转换成时间数组
     timeArray = time.strptime(date, DateFormat)
     return timeArray.tm_hour
-
-
+    
 print(getHours())

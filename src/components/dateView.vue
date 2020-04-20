@@ -10,8 +10,7 @@ export default {
     data(){
         return{
             crowdedData :[],
-            averageTime:[],
-            color:['#ffffff','#a0e19f','#61e1d9','#ffff7f','#e0973c','#dc5d59','#b30404'],
+            color:['#a0e19f','#61e1d9','#ffff7f','#e0973c','#dc5d59','#b30404'],
             stops: [],
             option:{},
             startTime:'',
@@ -65,39 +64,24 @@ export default {
             vm.stops = []
             let res = await vm.axios.get(`api/routes/crowdData&line_name=${store.getters.selectedRoute}`)
             if(res.status===200){
-                vm.data = res.data[0]
-                let data = res.data[0];
+                vm.data = res.data
+                let data = res.data;
                 // console.log(data)
                 vm.startTime =  data['startTime']
                 vm.endTime = data['endTime']
                 data['route'].forEach(element => {
                     let site_name = element['site_name']
                     vm.stops.push(site_name)
-                    vm.averageTime.push(element['averageTime'])
+                    //vm.averageTime.push(element['averageTime'])
                     let records = element['records'];
 
-                    records.sort((record1,record2)=>{
-                        if(record1['arriveTime']>record2['arriveTime']){
-                            return 1;
-                        }
-                        else return -1;
-                    });
-                    
                     for(let i = 0; i < records.length-1; i++){
                         let curTime = vm.formatDate(1000*records[i]['arriveTime'])
                         let nextTime = vm.formatDate(1000*records[i+1]['arriveTime'])
                         let crowdNum = records[i]['crowdNum']
                         let tag = records[i]['bus']
                         let crowdData_stop = [site_name,curTime,nextTime,crowdNum,tag]
-
-                        vm.crowdedData.push({
-                            value:crowdData_stop,
-                            itemStyle: {
-                                normal: {
-                                    color: crowdNum<vm.color.length?vm.color[crowdNum]:vm.color.slice(-1)[0]
-                                }
-                            }
-                        });
+                        vm.crowdedData.push(crowdData_stop);
                     }
 
                 });
@@ -132,6 +116,63 @@ export default {
                     text: store.getters.selectedRoute,
                     left: 'center'
                 },
+                legend:{
+                    data: [{
+                        name: '系列1',
+                        // 强制设置图形为圆。
+                        icon: 'circle',
+                        // 设置文本为红色
+                        textStyle: {
+                            color: 'red'
+                        }
+                    }]
+                },
+                visualMap: {
+                    textStyle:{
+                         color:'#333',
+                         fontStyle:'italic',
+                          fontWeight:'bold'
+                    },
+                    top: 10,
+                    left: 10,
+                    dimension:3,
+                    pieces: [{
+                        gt: 0,
+                        lte: 1,
+                        label: '冷清',
+                        color: '#096'
+                    }, {
+                        gt: 1,
+                        lte: 2,
+                        label: '空闲',
+                        color: vm.color[0]
+                    }, {
+                        gt: 2,
+                        lte: 3,
+                        label: '较空闲',
+                        color: vm.color[1]
+                    }, {
+                        gt: 3,
+                        lte: 4,
+                        label: '轻度拥挤',
+                        color: vm.color[2]
+                    }, {
+                        gt: 4,
+                        lte: 6,
+                        label: '拥挤',
+                        color: vm.color[3]
+                    }, {
+                        gt: 6,
+                        lte: 8,
+                        label: '爆满',
+                        color: vm.color[4]
+                    },{
+                        gt: 8,
+                        label: '严重爆满',
+                        color: vm.color[5]
+                    }],
+              
+                },
                 xAxis: {
                     type: 'time',
                     position: 'top',
@@ -159,7 +200,8 @@ export default {
                     },
                 },
                 grid:{
-                    show:true
+                    show:true,
+                    left:'16%'
                 },
                 dataZoom:[{
                     type:'slider',

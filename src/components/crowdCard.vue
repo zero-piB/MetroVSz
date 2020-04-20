@@ -97,10 +97,10 @@ $iconRadius:20px;
     z-index: 200;
     border-radius: 20px;
     border: 2px solid rgb(45, 161, 238);
-    top:25%;
-    left: 25%;
-    height: 400px;
-    width: 700px;
+    top:10%;
+    left: 20%;
+    height: 600px;
+    width: 1000px;
     padding-top: 25px;
 }
 .remove.icon {
